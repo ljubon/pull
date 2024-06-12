@@ -9,15 +9,12 @@
         - lib/*.js
         - Dockerfile
         - test/**
-  
-  permissions:
-    packages: write
-    actions: write
-  
+
   jobs:
     release:
-      name: Build and Push
+      name: Release
       runs-on: ubuntu-latest
+      environment: release
       steps:
         - uses: actions/checkout@v3
   
@@ -37,7 +34,7 @@
           with:
             registry: ghcr.io
             username: ${{ github.actor }}
-            password: ${{ secrets.GITHUB_TOKEN }}
+            password: ${{ secrets.GH_PAT_PUBLISH }}
   
         - name: Build and push the image to GitHub Registry
           uses: docker/build-push-action@v5
@@ -48,4 +45,4 @@
             build-args: |
               VCS_REF=${{ github.sha }}
               BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
-            github-token: ${{ secrets.GITHUB_TOKEN }}
+            github-token: ${{ secrets.GH_PAT_PUBLISH }}
